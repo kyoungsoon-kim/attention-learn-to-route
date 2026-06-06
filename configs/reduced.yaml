@@ -1,0 +1,37 @@
+# Reduced TSP-20 config — quick verification run (hours on a single GPU / CPU).
+# Architecture is identical to the paper; only the training budget shrinks.
+# For the full paper budget use configs/base.yaml.
+# Paper: https://arxiv.org/abs/1803.08475
+
+model:
+  d_h: 128            # §3.1 — full architecture (unchanged)
+  d_x: 2              # §3.1 — TSP coords
+  n_layers: 3         # §5  — N = 3
+  n_heads: 8          # §3.1 — M = 8
+  d_ff: 512           # §3.1 — FF hidden 512
+  tanh_clip: 10.0     # §3.2 — C = 10
+  qkv_bias: false     # [UNSPECIFIED] — matches official code
+  norm: "batch"       # §3.1 — BatchNorm
+
+training:
+  optimizer: "adam"
+  lr: 0.0001          # §5  — constant 1e-4
+  betas: [0.9, 0.999]
+  eps: 1.0e-8
+  weight_decay: 0.0
+  grad_clip: 1.0      # [FROM_OFFICIAL_CODE]
+  n_epochs: 20        # REDUCED (paper: 100) — enough to see convergence on TSP-20
+  steps_per_epoch: 500    # REDUCED (paper: 2500)
+  batch_size: 512     # §5  — kept
+  graph_size: 20      # §5  — n = 20
+  bl_warmup_beta: 0.8 # §5
+  bl_alpha: 0.05      # §4
+  bl_eval_size: 1000  # REDUCED (paper: 10000) — t-test eval set
+  seed: 1234
+
+eval:
+  test_size: 1000     # REDUCED (paper: 10000) — fixed held-out greedy eval per epoch
+  test_seed: 4321     # fixed seed so the eval set is constant across epochs/runs
+  n_sampling: 1280    # §5 — "sample 1280 solutions, report the best"
+  checkpoint_dir: "outputs"   # best greedy model saved here
+  reference_length: 3.83      # TSP-20 optimal (Concorde); for the optimality gap

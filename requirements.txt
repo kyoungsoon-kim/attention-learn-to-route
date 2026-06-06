@@ -1,0 +1,5 @@
+torch>=2.0.0
+pyyaml>=6.0
+numpy>=1.24.0
+scipy>=1.10.0   # paired t-test for the rollout baseline update (§4)
+ortools>=9.0   # optional — OR-Tools CVRP baseline (src.compare_baselines --ortools)

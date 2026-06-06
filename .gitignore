@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# Virtual envs
+.venv/
+venv/
+env/
+
+# Paper PDF (copyright)
+*.pdf
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Keep trained checkpoints (outputs/best.pt) committed for portfolio.
+# To exclude them instead, uncomment:
+# outputs/
+# outputs_cvrp/

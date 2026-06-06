@@ -1,0 +1,38 @@
+# Reduced CVRP-20 config — quick verification run (hours on a single GPU).
+# Same Attention Model as TSP; the depot/demand handling lives in src/problems/cvrp.
+# Paper: https://arxiv.org/abs/1803.08475 (Appendix — VRP)
+
+problem: "cvrp"
+
+model:
+  d_h: 128            # §3.1 — full architecture
+  d_x: 2              # unused for CVRP (the CVRP embedder defines its own input dims)
+  n_layers: 3         # §5  — N = 3
+  n_heads: 8          # §3.1 — M = 8
+  d_ff: 512           # §3.1 — FF hidden 512
+  tanh_clip: 10.0     # §3.2 — C = 10
+  qkv_bias: false     # [UNSPECIFIED] — matches official code
+  norm: "batch"       # §3.1 — BatchNorm
+
+training:
+  optimizer: "adam"
+  lr: 0.0001          # §5  — constant 1e-4
+  betas: [0.9, 0.999]
+  eps: 1.0e-8
+  weight_decay: 0.0
+  grad_clip: 1.0      # [FROM_OFFICIAL_CODE]
+  n_epochs: 20        # REDUCED (paper: 100)
+  steps_per_epoch: 500    # REDUCED (paper: 2500)
+  batch_size: 512     # §5  — kept
+  graph_size: 20      # n = 20 customers (capacity D = 30)
+  bl_warmup_beta: 0.8 # §5
+  bl_alpha: 0.05      # §4
+  bl_eval_size: 1000  # REDUCED (paper: 10000)
+  seed: 1234
+
+eval:
+  test_size: 1000     # REDUCED (paper: 10000)
+  test_seed: 4321
+  n_sampling: 1280    # §5 — "sample 1280 solutions, report the best"
+  checkpoint_dir: "outputs_cvrp"   # separate from the TSP checkpoint
+  reference_length: 6.14      # CVRP-20 LKH3 (Kool et al. Table); for the optimality gap

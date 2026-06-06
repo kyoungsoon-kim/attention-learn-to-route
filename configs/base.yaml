@@ -1,0 +1,37 @@
+# Configuration for "Attention, Learn to Solve Routing Problems!" (Kool et al., ICLR 2019)
+# Paper: https://arxiv.org/abs/1803.08475
+# Every value is cited to a paper section or flagged [UNSPECIFIED].
+# Target problem: Euclidean TSP (the paper defines the model in terms of TSP, §3).
+
+model:
+  d_h: 128            # §3.1 — "we use d_h = 128" (embedding / hidden dim)
+  d_x: 2              # §3.1 — "for TSP d_x = 2" (node feature dim = coordinates)
+  n_layers: 3         # §5  — "We use N = 3 layers in the encoder"
+  n_heads: 8          # §3.1 — "M = 8 heads"
+  d_ff: 512           # §3.1 / App. A — FF hidden dim "512 and ReLu activation"
+  tanh_clip: 10.0     # §3.2 — "clip ... within [−C, C] (C = 10) using tanh"
+  # d_k = d_v = d_h // n_heads = 16 (App. A — "d_k = d_v = d_h/M = 16")
+  # [UNSPECIFIED] QKV projection bias — paper gives W^Q/W^K/W^V as matrices only.
+  qkv_bias: false     # [UNSPECIFIED] no bias mentioned; matches official code
+  norm: "batch"       # §3.1 — "batch normalization (BN) ... better than layer norm"
+
+training:
+  optimizer: "adam"   # §4  — "We use Adam"
+  lr: 0.0001          # §5  — "constant learning rate η = 10^−4"
+  # [UNSPECIFIED] Adam betas/eps — using PyTorch defaults
+  betas: [0.9, 0.999] # [UNSPECIFIED] — PyTorch default (paper only says "Adam")
+  eps: 1.0e-8         # [UNSPECIFIED] — PyTorch default
+  weight_decay: 0.0   # [UNSPECIFIED] — not mentioned; default 0
+  grad_clip: 1.0      # [FROM_OFFICIAL_CODE] max_norm=1.0 (not stated in paper)
+  n_epochs: 100       # §5  — "We train for 100 epochs"
+  steps_per_epoch: 2500   # §5 — "Every epoch we process 2500 batches"
+  batch_size: 512     # §5  — "2500 batches of 512 instances"
+  graph_size: 20      # §5  — "n = 20" (paper also reports 50, 100)
+  bl_warmup_beta: 0.8 # §5  — "exponential baseline (β = 0.8) during the first epoch"
+  bl_alpha: 0.05      # §4  — "paired t-test (α = 5%)"
+  bl_eval_size: 10000 # §4  — "10000 separate (evaluation) instances"
+  seed: 1234          # [UNSPECIFIED] — paper reports robustness to seed; pick 1234
+
+eval:
+  n_sampling: 1280    # §5  — "we sample 1280 solutions ... report the best"
+  test_size: 10000    # §5  — "we report performance on 10000 test instances"
