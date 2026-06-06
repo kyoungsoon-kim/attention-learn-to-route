@@ -12,6 +12,10 @@ env/
 # Paper PDF (copyright)
 *.pdf
 
+# Paper-derived docs (excluded by request)
+REPRODUCTION_NOTES.md
+PROGRESS_paper2code_pdf2json.md
+
 # OS / editor
 .DS_Store
 Thumbs.db
